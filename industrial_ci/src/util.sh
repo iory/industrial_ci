@@ -162,7 +162,19 @@ function ici_hook() {
 function ici_time_start {
     ici_hook "before_${1}" || ici_exit
     if [ "$DEBUG_BASH" ] && [ "$DEBUG_BASH" == true ]; then set +x; fi
-    ICI_START_TIME=$(date -u +%s%N)
+    if [[ "$(uname)" == "Darwin" ]]; then
+        if command -v gdate >/dev/null 2>&1; then
+            ICI_START_TIME=$(gdate -u +%s%N)
+        else
+            echo "GNU date is required (gdate). Install it via Homebrew with 'brew install coreutils'."
+            exit 1
+        fi
+    elif [[ "$(uname)" == "Linux" ]]; then
+        ICI_START_TIME=$(date -u +%s%N)
+    else
+        echo "Unsupported operating system."
+        exit 1
+    fi
     ICI_TIME_ID="$(printf %08x $((RANDOM * RANDOM)))"
     ICI_FOLD_NAME=$1
 
@@ -195,7 +207,20 @@ function ici_time_end {
     local name=$ICI_FOLD_NAME
 
     if [ -z "$ICI_START_TIME" ]; then ici_warn "[ici_time_end] var ICI_START_TIME is not set. You need to call ici_time_start in advance. Returning."; return; fi
-    local end_time; end_time=$(date -u +%s%N)
+    local end_time
+    if [[ "$(uname)" == "Darwin" ]]; then
+        if command -v gdate >/dev/null 2>&1; then
+            end_time=$(gdate -u +%s%N)
+        else
+            echo "GNU date is required (gdate). Install it via Homebrew with 'brew install coreutils'."
+            exit 1
+        fi
+    elif [[ "$(uname)" == "Linux" ]]; then
+        end_time=$(date -u +%s%N)
+    else
+        echo "Unsupported operating system."
+        exit 1
+    fi
     local elapsed_seconds; elapsed_seconds=$(( (end_time - ICI_START_TIME)/1000000000 ))
 
     ici_log -en "\e[${color_wrap}m"  # just set color, no output

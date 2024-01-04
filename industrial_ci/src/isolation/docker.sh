@@ -31,7 +31,7 @@ function ici_forward_mount() {
   fi
   if [ -n "$p" ]; then
     local p_abs
-    p_abs=$(readlink -m "$p")
+    p_abs=$(greadlink -m "$p")
     local p_inner=${3:-$p_abs}
     _docker_run_opts+=(-v "$p_abs:$p_inner:$2")
     if [ -n "$v" ]; then

@@ -250,7 +250,7 @@ function  ici_import_directory {
     ici_guard rm -rf "$target"
     ici_guard mkdir "$target"
     local args=()
-    for p in "$BASEDIR" "$CCACHE_DIR" "$(readlink -m "$ICI_SRC_PATH/../..")"; do
+    for p in "$BASEDIR" "$CCACHE_DIR" "$(greadlink -m "$ICI_SRC_PATH/../..")"; do
         if [[ $p/ ==  $dir/?* ]]; then
             args+=("--exclude=.${p#"$dir"}")
         fi

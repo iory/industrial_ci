@@ -185,6 +185,6 @@ function ici_run_cmd_in_docker() {
 # ensures that copied files are owned by the target user
 function docker_cp {
   set -o pipefail
-  tar --numeric-owner --owner="${3:-root}" --group="${4:-root}" -c -f - -C "$(dirname "$1")" "$(basename "$1")" | docker cp - "$2"
+  gtar --numeric-owner --owner="${3:-root}" --group="${4:-root}" -c -f - -C "$(dirname "$1")" "$(basename "$1")" | docker cp - "$2"
   set +o pipefail
 }
